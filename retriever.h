@@ -14,7 +14,7 @@ public:
     QString content();
 
 signals:
-    void pageRetrieved();
+    void contentReady();
 
 private:
     QNetworkAccessManager *nam;
@@ -26,7 +26,7 @@ private:
 
 private slots:
     void logResponse();
-    void processResponse();
+    void emitResponse();
 };
 
 #endif // RETRIEVER_H

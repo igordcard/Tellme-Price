@@ -15,5 +15,6 @@ int main(int argc, char *argv[])
 
 void quit()
 {
+    qDebug() << "Exited due to finished()";
     exit(0);
 }

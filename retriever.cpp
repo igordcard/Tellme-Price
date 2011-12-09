@@ -9,7 +9,7 @@ Retriever::Retriever(QString urlstr, QObject *parent) :
     request = new QNetworkRequest(urlstr);
     reply = nam->get(*request);
     connect(reply, SIGNAL(readyRead()), this, SLOT(logResponse()));
-    connect(reply, SIGNAL(finished()), this, SLOT(processResponse()));
+    connect(reply, SIGNAL(finished()), this, SLOT(emitResponse()));
 }
 
 QString Retriever::content()
@@ -20,10 +20,9 @@ QString Retriever::content()
 void Retriever::logResponse()
 {
     content_var += QString(reply->readAll());
-    qDebug() << QString(reply->readAll());
 }
 
-void Retriever::processResponse()
+void Retriever::emitResponse()
 {
-    emit pageRetrieved();
+    emit contentReady();
 }

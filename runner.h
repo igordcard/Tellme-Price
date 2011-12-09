@@ -2,7 +2,6 @@
 #define RUNNER_H
 
 #include <QObject>
-#include <QDebug>
 #include "retriever.h"
 #include "interpreter.h"
 #include "saver.h"
@@ -16,17 +15,22 @@ public:
 
 signals:
     void finished();
+    void currentDone();
 
 public slots:
     void run();
 
 private slots:
     void displayContent();
+    void processContent();
+    void getNext();
 
 private:
     Retriever *retriever;
     Interpreter *interpreter;
     Saver *saver;
+    qint32 c;
+    void cleanup();
 };
 
 #endif // RUNNER_H

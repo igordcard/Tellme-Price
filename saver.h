@@ -2,11 +2,17 @@
 #define SAVER_H
 
 #include <QFile>
+#include <QTextStream>
 
 class Saver
 {
 public:
-    Saver();
+    Saver(QString filename);
+    void appendLine(QString str);
+
+private:
+    QFile *file;
+    QTextStream *stream;
 };
 
 #endif // SAVER_H
