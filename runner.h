@@ -5,7 +5,7 @@
 #include <QRegExp>
 #include "retriever.h"
 #include "interpreter.h"
-#include "saver.h"
+#include "sqlsaver.h"
 
 class Runner : public QObject
 {
@@ -29,7 +29,7 @@ private slots:
 private:
     Retriever *retriever;
     Interpreter *interpreter;
-    Saver *saver;
+    SqlSaver *saver;
     qint32 iid;
     QRegExp *title_exp;
     QRegExp *price_exp;

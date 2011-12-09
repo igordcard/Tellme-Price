@@ -1,7 +1,7 @@
 #include "saver.h"
 
 Saver::Saver(QString filename)
-{
+{    
     file = new QFile(filename);
     file->open(QIODevice::WriteOnly | QIODevice::Text);
     stream = new QTextStream(file);
