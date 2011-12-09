@@ -1,19 +1,32 @@
 #ifndef RETRIEVER_H
 #define RETRIEVER_H
 
-#include <QtNetwork/QNetworkAccessManager>
+#include <QObject>
+#include <QtNetwork>
 #include <QUrl>
 
-class Retriever : QObject
+class Retriever : public QObject
 {
     Q_OBJECT
 
 public:
-    Retriever();
+    Retriever(QString urlstr, QObject *parent = 0);
+    QString content();
+
+signals:
+    void pageRetrieved();
+
 private:
+    QNetworkAccessManager *nam;
     QUrl url;
-    QNetworkAccessManager nam;
+    QNetworkRequest *request;
     QNetworkReply *reply;
+    QString urlstr;
+    QString content_var;
+
+private slots:
+    void logResponse();
+    void processResponse();
 };
 
 #endif // RETRIEVER_H

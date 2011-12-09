@@ -18,11 +18,19 @@ TEMPLATE = app
 SOURCES += main.cpp \
     retriever.cpp \
     saver.cpp \
-    interpreter.cpp
+    interpreter.cpp \
+    runner.cpp
 
 HEADERS += \
     retriever.h \
     saver.h \
-    interpreter.h
+    interpreter.h \
+    runner.h
 
 MOC_DIR = debug/moc
+
+
+
+
+
+
