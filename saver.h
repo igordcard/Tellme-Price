@@ -9,6 +9,7 @@ class Saver
 public:
     Saver(QString filename);
     void appendLine(QString str);
+    void flush();
 
 private:
     QFile *file;

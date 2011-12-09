@@ -10,4 +10,10 @@ Saver::Saver(QString filename)
 void Saver::appendLine(QString str)
 {
     *stream << str+"\n";
+    //flush();
+}
+
+void Saver::flush()
+{
+    stream->flush();
 }

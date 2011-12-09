@@ -2,6 +2,7 @@
 #define RUNNER_H
 
 #include <QObject>
+#include <QRegExp>
 #include "retriever.h"
 #include "interpreter.h"
 #include "saver.h"
@@ -29,8 +30,9 @@ private:
     Retriever *retriever;
     Interpreter *interpreter;
     Saver *saver;
-    qint32 c;
-    void cleanup();
+    qint32 iid;
+    QRegExp *title_exp;
+    QRegExp *price_exp;
 };
 
 #endif // RUNNER_H

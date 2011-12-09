@@ -3,12 +3,17 @@
 #include "runner.h"
 
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
+qint32 max = 9500;
 
 Runner::Runner(QObject *parent) :
     QObject(parent)
 {
-    c = 0;
+    iid = 0;
+    saver = new Saver("prices.csv");
+    saver->appendLine("ID,Title,Price,URL");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
+    title_exp = new QRegExp("<a href=\"Produto.asp\\?Artigo\=[0-9]+\" class=\"LetraLaranja\">([a-zA-Z0-9\-\./ ]+)</a>");
+    price_exp = new QRegExp("<strong>[ \t\r\n]*&euro; ([0-9,]+)[ \t\r\n]*</strong>");
 }
 
 void Runner::run()
@@ -25,32 +30,36 @@ void Runner::displayContent()
 void Runner::processContent()
 {
     QString newContent = retriever->content();
+    QString title;
+    QString price;
+    QString formatted;
 
     if(newContent.length() > 1024) {
-        saver = new Saver("prices/item-"+QString::number(c)+".html");
-        qDebug() << "Writing item " << c;
-        saver->appendLine(newContent);
+        qDebug() << "Writing item:" << iid;
+        title_exp->indexIn(newContent);
+        price_exp->indexIn(newContent);
+        title = title_exp->cap(1);
+        price = price_exp->cap(1);
+        price.replace(",",".");
+        formatted = QString::number(iid) + "," + title + "," + price + "," + baseurl+QString::number(iid); // use iid + "," to lol a lil bit (and learn)
+        saver->appendLine(formatted);
     }
 
-    c++;
+    iid++;
 
     emit currentDone();
 }
 
 void Runner::getNext()
 {
-    if(c > 100)
+    if(iid > max)
         emit finished();
 
-    //cleanup();
-    retriever = new Retriever(QString(baseurl+QString::number(c)));
-    connect(retriever, SIGNAL(contentReady()), this, SLOT(processContent()));
-}
-
-void Runner::cleanup()
-{
-    if(c > 0) {
-        delete retriever;
-        delete saver;
+    if(iid % 32 == 0) {
+        qDebug() << "Writing to disk...";
+        saver->flush();
     }
+
+    retriever = new Retriever(QString(baseurl+QString::number(iid)));
+    connect(retriever, SIGNAL(contentReady()), this, SLOT(processContent()));
 }
