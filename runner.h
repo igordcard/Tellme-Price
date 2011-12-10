@@ -29,7 +29,8 @@ private slots:
 private:
     Retriever *retriever;
     Interpreter *interpreter;
-    SqlSaver *saver;
+    SqlSaver *sqlsaver;
+    //Saver *saver;
     qint32 iid;
     QRegExp *title_exp;
     QRegExp *price_exp;

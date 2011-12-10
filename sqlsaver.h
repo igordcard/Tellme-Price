@@ -4,16 +4,20 @@
 #include <QSqlDatabase>
 #include <QSqlDriver>
 #include <QSqlQuery>
+#include <QVariant>
 
 class SqlSaver
 {
 public:
     SqlSaver(QString filename);
-    void SqlSaver::addPrice(QString str);
+    void addPrice(qint32 id, QString title, float price);
+    void setStructure();
 
 private:
     QSqlDatabase db;
-    QSqlQuery insert;
+    QSqlQuery *createQ;
+    QSqlQuery *insertQ;
+    QSqlQuery *selectQ;
 };
 
 #endif // SQLSAVER_H
