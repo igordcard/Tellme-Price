@@ -12,6 +12,7 @@ public:
     SqlSaver(QString filename);
     void addPrice(qint32 id, QString title, float price);
     void setStructure();
+    void close();
 
 private:
     QSqlDatabase db;

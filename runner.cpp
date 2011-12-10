@@ -11,7 +11,7 @@ Runner::Runner(QObject *parent) :
     iid = 0;
     sqlsaver = new SqlSaver("data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
-    title_exp = new QRegExp("<a href=\"Produto.asp\\?Artigo\=[0-9]+\" class=\"LetraLaranja\">([a-zA-Z0-9\-\./ ]+)</a>");
+    title_exp = new QRegExp("<a href=\"Produto.asp\\?Artigo\\=[0-9]+\" class=\"LetraLaranja\">([\\w\\-\\.\\,/\\&\\; _\(\\)\\+\'\"\\º\\±]+)</a>");
     price_exp = new QRegExp("<strong>[ \t\r\n]*&euro; ([0-9,]+)[ \t\r\n]*</strong>");
 }
 
@@ -30,16 +30,17 @@ void Runner::processContent()
 {
     QString newContent = retriever->content();
     QString title;
-    QString price;
+    float price;
 
     if(newContent.length() > 1024) {
         qDebug() << "Writing item:" << iid;
         title_exp->indexIn(newContent);
         price_exp->indexIn(newContent);
         title = title_exp->cap(1);
-        price = price_exp->cap(1);
-        price.replace(",",".");
-        sqlsaver->addPrice(iid, title, price.toFloat());
+        price = price_exp->cap(1).replace(",",".").toFloat();
+        if(price > 0) { // skip obviously invalid products
+            sqlsaver->addPrice(iid, title, price);
+        }
     }
 
     iid++;
@@ -49,8 +50,10 @@ void Runner::processContent()
 
 void Runner::getNext()
 {
-    if(iid > max)
+    if(iid > max) {
+        sqlsaver->close();
         emit finished();
+    }
 
     retriever = new Retriever(QString(baseurl+QString::number(iid)));
     connect(retriever, SIGNAL(contentReady()), this, SLOT(processContent()));

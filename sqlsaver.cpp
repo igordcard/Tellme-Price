@@ -7,9 +7,8 @@ SqlSaver::SqlSaver(QString filename)
     // load database
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(filename);
-    qDebug() << "Opening DB...";
     if(!db.open()) {
-        qFatal("Failed to open database.");
+        qDebug() << "Failed to open database:" << db.lastError();
     }
 
     // define queries
@@ -37,14 +36,19 @@ void SqlSaver::setStructure()
     if(db.isOpen()) {
 
         if(db.tables().count() > 0) {
-            qDebug() << "There are already tables, nothing to do.";
+            qDebug() << "Loading existing database...";
             return;
         }
 
-        qDebug() << "Creating a new DB...";
+        qDebug() << "Creating new database...";
         createQ->prepare("CREATE TABLE prices (id INTEGER PRIMARY KEY, title VARCHAR(64), price REAL)");
         if(!createQ->exec()) {
             qDebug() << "Failed creating database structure:" << createQ->lastError().text();
         }
     }
+}
+
+void SqlSaver::close()
+{
+    db.close();
 }

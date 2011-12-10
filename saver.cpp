@@ -10,7 +10,7 @@ Saver::Saver(QString filename)
 void Saver::appendLine(QString str)
 {
     *stream << str+"\n";
-    //flush(); // optional
+    flush(); // optional, comment if using the flush from outside
 }
 
 void Saver::flush()
