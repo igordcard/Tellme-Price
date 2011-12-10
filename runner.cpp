@@ -3,16 +3,15 @@
 #include "runner.h"
 
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
-qint32 max = 9500;
+qint32 max = 9400;
 
 Runner::Runner(QObject *parent) :
     QObject(parent)
 {
-    iid = 0;
+    iid = 9300;
+    cnt = 0;
     sqlsaver = new SqlSaver("data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
-    title_exp = new QRegExp("<a href=\"Produto.asp\\?Artigo\\=[0-9]+\" class=\"LetraLaranja\">([\\w\\-\\.\\,/\\&\\; _\(\\)\\+\'\"\\º\\±]+)</a>");
-    price_exp = new QRegExp("<strong>[ \t\r\n]*&euro; ([0-9,]+)[ \t\r\n]*</strong>");
 }
 
 void Runner::run()
@@ -20,6 +19,7 @@ void Runner::run()
     emit currentDone();
 }
 
+// used for displaying page contents on screen
 void Runner::displayContent()
 {
     qDebug() << retriever->content();
@@ -30,19 +30,14 @@ void Runner::processContent()
 {
     QString newContent = retriever->content();
     QString title;
-    float price;
+    float price = 0;
 
-    if(newContent.length() > 1024) {
+    Interpreter::parse_item(newContent, &title, &price);
+    if(price > 0) { // skip invalid or inexistent products
         qDebug() << "Writing item:" << iid;
-        title_exp->indexIn(newContent);
-        price_exp->indexIn(newContent);
-        title = title_exp->cap(1);
-        price = price_exp->cap(1).replace(",",".").toFloat();
-        if(price > 0) { // skip obviously invalid products
-            sqlsaver->addPrice(iid, title, price);
-        }
+        sqlsaver->addPrice(iid, title, price);
+        cnt++;
     }
-
     iid++;
 
     emit currentDone();
@@ -52,6 +47,7 @@ void Runner::getNext()
 {
     if(iid > max) {
         sqlsaver->close();
+        qDebug() << "Total items fetched:" << cnt;
         emit finished();
     }
 
