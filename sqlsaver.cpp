@@ -1,6 +1,7 @@
 #include "sqlsaver.h"
 #include <QDebug>
 #include <QSqlError>
+#include <QDateTime>
 
 SqlSaver::SqlSaver(QString filename)
 {
@@ -11,23 +12,35 @@ SqlSaver::SqlSaver(QString filename)
         qDebug() << "Failed to open database:" << db.lastError();
     }
 
-    // define queries
-    createQ = new QSqlQuery(db);
-    insertQ = new QSqlQuery(db);
-    selectQ = new QSqlQuery(db);
+    // ready query up
+    query = new QSqlQuery(db);
 
     setStructure();
 }
 
 void SqlSaver::addPrice(qint32 id, QString title, float price)
 {
-    insertQ->prepare("INSERT INTO prices (id, title, price) VALUES (:id, :title, :price)");
-    insertQ->bindValue(":id", QVariant(id), QSql::In);
-    insertQ->bindValue(":title", QVariant(title), QSql::In);
-    insertQ->bindValue(":price", QVariant(price), QSql::In);
+    qint32 today;
 
-    if(!insertQ->exec()) {
-        qDebug() << "Failed inserting record:" << insertQ->lastError().text();
+    // get timestamp of today (at midnight), used as an unique db day identifier
+    today = QDateTime::currentDateTime().toTime_t();
+    today -= today % (86400);
+
+    // insert item
+    query->prepare("INSERT INTO items (itemId, title) VALUES (:itemId, :title)");
+    query->bindValue(":itemId", QVariant(id));
+    query->bindValue(":title", QVariant(title));
+    if(!query->exec()) {
+        qDebug() << "Failed inserting item:" << query->lastError().text();
+    }
+
+    // insert price of today
+    query->prepare("INSERT INTO trends (itemId, day, price) VALUES (:itemId, :day, :price)");
+    query->bindValue(":itemId", QVariant(id));
+    query->bindValue(":day", QVariant(today));
+    query->bindValue(":price", QVariant(price));
+    if(!query->exec()) {
+        qDebug() << "Failed inserting price:" << query->lastError().text();
     }
 }
 
@@ -41,10 +54,27 @@ void SqlSaver::setStructure()
         }
 
         qDebug() << "Creating new database...";
-        createQ->prepare("CREATE TABLE prices (id INTEGER PRIMARY KEY, title VARCHAR(64), price REAL)");
-        if(!createQ->exec()) {
-            qDebug() << "Failed creating database structure:" << createQ->lastError().text();
-        }
+        createTables();
+    }
+}
+
+void SqlSaver::createTables()
+{
+    query->prepare("CREATE TABLE items ("
+                   "itemId INTEGER PRIMARY KEY,"
+                   "title VARCHAR(64))");
+    if(!query->exec()) {
+        qDebug() << "Failed creating database structure:" << query->lastError().text();
+    }
+
+    query->prepare("CREATE TABLE trends ("
+                   "itemId INTEGER,"
+                   "day INTEGER,"
+                   "price REAL NOT NULL,"
+                   "FOREIGN KEY (itemId) REFERENCES items(itemId)"
+                   "PRIMARY KEY (itemId, day))");
+    if(!query->exec()) {
+        qDebug() << "Failed creating database structure:" << query->lastError().text();
     }
 }
 

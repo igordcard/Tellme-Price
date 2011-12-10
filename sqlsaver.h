@@ -16,9 +16,8 @@ public:
 
 private:
     QSqlDatabase db;
-    QSqlQuery *createQ;
-    QSqlQuery *insertQ;
-    QSqlQuery *selectQ;
+    QSqlQuery *query;
+    void createTables();
 };
 
 #endif // SQLSAVER_H
