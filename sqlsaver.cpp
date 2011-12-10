@@ -21,27 +21,50 @@ SqlSaver::SqlSaver(QString filename)
 void SqlSaver::addPrice(qint32 id, QString title, float price)
 {
     qint32 today;
+    QVariant p_itemId = QVariant(id);
+    QVariant p_title = QVariant(title);
+    QVariant p_price = QVariant(price);
+    QVariant p_today;
 
     // get timestamp of today (at midnight), used as an unique db day identifier
     today = QDateTime::currentDateTime().toTime_t();
     today -= today % (86400);
+    p_today = QVariant(today);
 
-    // insert item
-    query->prepare("INSERT INTO items (itemId, title) VALUES (:itemId, :title)");
-    query->bindValue(":itemId", QVariant(id));
-    query->bindValue(":title", QVariant(title));
+    // check if current item already exists
+    query->prepare("SELECT itemId FROM items WHERE itemId=:itemId");
+    query->bindValue(":itemId", p_itemId);
     if(!query->exec()) {
-        qDebug() << "Failed inserting item:" << query->lastError().text();
+        qDebug() << "Couldn't check for items:" << query->lastError().text();
+    }
+    else if(!query->next()) {
+        // insert item
+        query->prepare("INSERT INTO items (itemId, title) VALUES (:itemId, :title)");
+        query->bindValue(":itemId", p_itemId);
+        query->bindValue(":title", p_title);
+        if(!query->exec()) {
+            qDebug() << "Failed inserting item:" << query->lastError().text();
+        }
     }
 
-    // insert price of today
-    query->prepare("INSERT INTO trends (itemId, day, price) VALUES (:itemId, :day, :price)");
-    query->bindValue(":itemId", QVariant(id));
-    query->bindValue(":day", QVariant(today));
-    query->bindValue(":price", QVariant(price));
+    // check if current item has already been priced today
+    query->prepare("SELECT itemId FROM trends WHERE itemId=:itemId AND day=:day");
+    query->bindValue(":itemId", p_itemId);
+    query->bindValue(":day", p_today);
     if(!query->exec()) {
-        qDebug() << "Failed inserting price:" << query->lastError().text();
+        qDebug() << "Couldn't check for dates:" << query->lastError().text();
     }
+    else if(!query->next()) {
+        // insert price of today
+        query->prepare("INSERT INTO trends (itemId, day, price) VALUES (:itemId, :day, :price)");
+        query->bindValue(":itemId", p_itemId);
+        query->bindValue(":day", p_today);
+        query->bindValue(":price", p_price);
+        if(!query->exec()) {
+            qDebug() << "Failed inserting trend:" << query->lastError().text();
+        }
+    }
+
 }
 
 void SqlSaver::setStructure()

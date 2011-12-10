@@ -3,12 +3,12 @@
 #include "runner.h"
 
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
-qint32 max = 9400;
+qint32 max = 9500;
 
 Runner::Runner(QObject *parent) :
     QObject(parent)
 {
-    iid = 9300;
+    iid = 0;
     cnt = 0;
     sqlsaver = new SqlSaver("data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
@@ -31,6 +31,9 @@ void Runner::processContent()
     QString newContent = retriever->content();
     QString title;
     float price = 0;
+
+    // free current retriever
+    retriever->deleteLater();
 
     Interpreter::parse_item(newContent, &title, &price);
     if(price > 0) { // skip invalid or inexistent products
