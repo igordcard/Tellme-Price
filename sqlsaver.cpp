@@ -34,7 +34,7 @@ void SqlSaver::addPrice(qint32 id, QString title, float price)
 //    }
 //    else if(!query->next()) {
         // insert item
-        qDebug() << "Inserting new item:" << id << ":" << title;
+        //qDebug() << "Inserting new item:" << id << ":" << title;
         query->prepare("INSERT INTO items (itemId, title) VALUES (:itemId, :title)");
         query->bindValue(":itemId", p_itemId);
         query->bindValue(":title", p_title);
@@ -55,7 +55,7 @@ void SqlSaver::addPrice(qint32 id, QString title, float price)
 //    }
 //    else if(!query->next()) {
         // insert price of today
-        qDebug() << "Inserting new price:" << id << ":" << price;
+        //qDebug() << "Inserting new price:" << id << ":" << price;
         query->prepare("INSERT INTO trends (itemId, day, price) VALUES (:itemId, :day, :price)");
         query->bindValue(":itemId", p_itemId);
         query->bindValue(":day", p_today);
