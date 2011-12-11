@@ -1,7 +1,6 @@
 ##################################################################
 Run the following commands to generate the executable binary file:
 
-qmake -project
 qmake
 make
 
@@ -14,4 +13,4 @@ Then, just run it:
 #################################################
 Afterwards, move it somewhere else, like /usr/bin
 
-TODO: automatic installer.
+TODO: Makefile.
