@@ -37,18 +37,21 @@ void Runner::processContent()
 
     Interpreter::parse_item(newContent, &title, &price);
     if(price > 0) { // skip invalid or inexistent products
-        qDebug() << "Writing item:" << iid;
         sqlsaver->addPrice(iid, title, price);
         cnt++;
     }
-    iid++;
 
     emit currentDone();
 }
 
 void Runner::getNext()
 {
-    if(iid > max) {
+    while(sqlsaver->exists(++iid) && iid < max) {
+        //qDebug() << iid;
+        qDebug() << "Progress:" << (qint32)((float)iid / max*100) << "% (~)";
+    }
+
+    if(iid >= max) {
         sqlsaver->close();
         qDebug() << "Total items fetched:" << cnt;
         emit finished();
