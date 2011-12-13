@@ -1,15 +1,14 @@
 #include <QDebug>
 #include "retriever.h"
 #include "runner.h"
-#include <iostream>
 
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
 qint32 max = 9500;
 
-Runner::Runner(QObject *parent) :
+Runner::Runner(QObject *parent, qint32 begin) :
     QObject(parent)
 {
-    iid = 3800;
+    iid = begin;
     cnt = 0;
     sqlsaver = new SqlSaver("data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
@@ -50,7 +49,7 @@ void Runner::getNext()
     while(sqlsaver->exists(++iid) && iid < max);
 
     //qDebug() << "Progress:" << (qint32)((float)iid / max*100) << "% ...";
-    std::cout << "\rProgress: " << (qint32)((float)iid / max*100) << " % ..." << std::flush;// << std::endl;
+    qDebug() << iid << "/" << max << "-" << (qint32)((float)iid / max*100) << "% - count:" << cnt;
 
     if(iid >= max) {
         sqlsaver->close();

@@ -38,9 +38,9 @@ void SqlSaver::addPrice(qint32 id, QString title, float price)
         query->prepare("INSERT INTO items (itemId, title) VALUES (:itemId, :title)");
         query->bindValue(":itemId", p_itemId);
         query->bindValue(":title", p_title);
-        if(!query->exec()) {
-            qDebug() << "Failed inserting item:" << query->lastError().text();
-        }
+//        if(!query->exec()) {
+//            qDebug() << "Failed inserting item" << id << ":" << query->lastError().text();
+//        }
 //    }
 //    else {
 //        qDebug() << "Item" << id << "already in database";
@@ -60,9 +60,9 @@ void SqlSaver::addPrice(qint32 id, QString title, float price)
         query->bindValue(":itemId", p_itemId);
         query->bindValue(":day", p_today);
         query->bindValue(":price", p_price);
-        if(!query->exec()) {
-            qDebug() << "Failed inserting trend:" << query->lastError().text();
-        }
+//        if(!query->exec()) {
+//            qDebug() << "Failed inserting trend:" << query->lastError().text();
+//        }
 //    }
 //    else {
 //        qDebug() << "Price of today already associated with item";

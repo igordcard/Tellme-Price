@@ -12,7 +12,7 @@ class Runner : public QObject
     Q_OBJECT
 
 public:
-    explicit Runner(QObject *parent = 0);
+    explicit Runner(QObject *parent = 0, qint32 begin = 0);
 
 signals:
     void finished();
