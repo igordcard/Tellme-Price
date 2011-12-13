@@ -4,6 +4,7 @@
 
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
 qint32 max = 9500;
+QTextStream out(stdout); // console output stream
 
 Runner::Runner(QObject *parent, qint32 begin) :
     QObject(parent)
@@ -49,8 +50,8 @@ void Runner::getNext()
 {
     while(sqlsaver->exists(++iid) && iid < max);
 
-    //qDebug() << "Progress:" << (qint32)((float)iid / max*100) << "% ...";
-    qDebug() << iid << "/" << max << "-" << (qint32)((float)iid / max*100) << "% - count:" << cnt << "-" << format_time(duration.elapsed());
+    out << "\r" << iid << "/" << max << " - " << (qint32)((float)iid / max*100) << "% - count: " << cnt << " - " << format_time(duration.elapsed());
+    flush(out);
 
     if(iid >= max) {
         sqlsaver->close();

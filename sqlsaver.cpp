@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QSqlError>
 #include <QDateTime>
+#include <QTextStream>
 
 SqlSaver::SqlSaver(QString filename)
 {
