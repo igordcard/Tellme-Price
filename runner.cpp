@@ -7,11 +7,12 @@ qint32 max = 9500;
 
 Runner::Runner(QObject *parent, qint32 begin) :
     QObject(parent)
-{
+{ // TODO: check if all these news are really required...
     iid = begin;
     cnt = 0;
     sqlsaver = new SqlSaver("data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
+    duration.start();
 }
 
 void Runner::run()
@@ -49,7 +50,7 @@ void Runner::getNext()
     while(sqlsaver->exists(++iid) && iid < max);
 
     //qDebug() << "Progress:" << (qint32)((float)iid / max*100) << "% ...";
-    qDebug() << iid << "/" << max << "-" << (qint32)((float)iid / max*100) << "% - count:" << cnt;
+    qDebug() << iid << "/" << max << "-" << (qint32)((float)iid / max*100) << "% - count:" << cnt << "-" << format_time(duration.elapsed());
 
     if(iid >= max) {
         sqlsaver->close();
@@ -59,4 +60,23 @@ void Runner::getNext()
 
     retriever = new Retriever(QString(baseurl+QString::number(iid)));
     connect(retriever, SIGNAL(contentReady()), this, SLOT(processContent()));
+}
+
+QString Runner::format_time(int time)
+{
+    qint32 s;
+    qint32 m;
+    qint32 h;
+    QString formatted;
+
+    time /= 1000;
+
+    s = time % 60;
+    time /= 60;
+    m = time % 60;
+    h = time / 60;
+
+    formatted = QString::number(h) + ":" + QString::number(m) + ":" + QString::number(s);
+
+    return formatted;
 }

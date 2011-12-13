@@ -32,6 +32,8 @@ private:
     //Saver *saver;
     qint32 iid;
     qint32 cnt;
+    QTime duration;
+    QString format_time(int time);
 };
 
 #endif // RUNNER_H
