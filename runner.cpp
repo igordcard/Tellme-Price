@@ -67,16 +67,34 @@ QString Runner::format_time(int time)
     qint32 s;
     qint32 m;
     qint32 h;
+    QString ss;
+    QString mm;
+    QString hh;
     QString formatted;
 
+    // conversion
     time /= 1000;
-
     s = time % 60;
     time /= 60;
     m = time % 60;
     h = time / 60;
 
-    formatted = QString::number(h) + ":" + QString::number(m) + ":" + QString::number(s);
+    /////////////
+    if(s < 10)
+        ss = "0" + QString::number(s);
+    else
+        ss = QString::number(s);
+    if(m < 10)
+        mm = "0" + QString::number(m);
+    else
+        mm = QString::number(m);
+    if(h < 10)
+        hh = "0" + QString::number(h);
+    else
+        hh = QString::number(h);
+    /////////////
+
+    formatted = hh + ":" + mm + ":" + ss;
 
     return formatted;
 }
