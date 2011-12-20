@@ -4,6 +4,8 @@
 #include <QDateTime>
 #include <QTextStream>
 
+QVariant p_today;
+
 SqlSaver::SqlSaver(QString filename)
 {
     // load database
@@ -16,6 +18,8 @@ SqlSaver::SqlSaver(QString filename)
     // ready query up
     query = new QSqlQuery(db);
 
+    p_today = today();
+
     setStructure();
 }
 
@@ -25,7 +29,6 @@ void SqlSaver::addPrice(qint32 id, QString title, float price)
     QVariant p_itemId = QVariant(id);
     QVariant p_title = QVariant(title);
     QVariant p_price = QVariant(price);
-    QVariant p_today = today();
 
     // check if current item already exists
 //    query->prepare("SELECT itemId FROM items WHERE itemId=:itemId");
