@@ -11,7 +11,7 @@ Runner::Runner(QObject *parent, qint32 begin) :
 { // TODO: check if all these news are really required...
     iid = begin;
     cnt = 0;
-    sqlsaver = new SqlSaver("data.db");
+    sqlsaver = new SqlSaver("/home/mask/Dropbox/data.db");
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
     duration.start();
 }
@@ -55,7 +55,7 @@ void Runner::getNext()
 
     if(iid >= max) {
         sqlsaver->close();
-        qDebug() << "Total items fetched:" << cnt;
+        qDebug() << "\nTotal items fetched:" << cnt;
         emit finished();
     }
 
