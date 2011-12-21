@@ -1,7 +1,7 @@
 #include "interpreter.h"
 #include <QDebug>
 
-QRegExp Interpreter::title_exp = QRegExp("<a href=\"Produto.asp\\?Artigo\\=[0-9]+\" class=\"LetraLaranja\">([\\w\\-\\.\\,/\\&\\; _\(\\)\\+\'\"\\º\\±\\!]+)</a>");
+QRegExp Interpreter::title_exp = QRegExp("<a href=\"Produto.asp\\?Artigo\\=[0-9]+\" class=\"LetraLaranja\">([\\w\\-\\.\\,/\\&\\; _\(\\)\\+\'\"\\º\\±\\!\\:]+)</a>");
 QRegExp Interpreter::price_exp = QRegExp("<strong>[ \t\r\n]*&euro; ([0-9,]+)[ \t\r\n]*</strong>");
 
 Interpreter::Interpreter()
