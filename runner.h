@@ -12,7 +12,7 @@ class Runner : public QObject
     Q_OBJECT
 
 public:
-    explicit Runner(QObject *parent = 0, qint32 begin = 0);
+    explicit Runner(QObject *parent = 0, qint32 begin = 0, qint32 end = 0);
 
 signals:
     void finished();
@@ -30,6 +30,7 @@ private:
     Retriever *retriever;
     SqlSaver *sqlsaver;
     //Saver *saver;
+    qint32 max;
     qint32 iid;
     qint32 cnt;
     QTime duration;
