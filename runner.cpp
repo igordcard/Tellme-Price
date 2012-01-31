@@ -2,16 +2,17 @@
 #include "retriever.h"
 #include "runner.h"
 
+// TODO: class for reading site formats using *.price files
 QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
 QTextStream out(stdout); // console output stream
 
-Runner::Runner(QObject *parent, qint32 begin, qint32 end) :
+Runner::Runner(QObject *parent, qint32 begin, qint32 end, QString path) :
     QObject(parent)
 { // TODO: check if all these news are really required...
     iid = begin;
     max = end;
     cnt = 0;
-    sqlsaver = new SqlSaver("/home/mask/Dropbox/data.db");
+    sqlsaver = new SqlSaver(path);
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
     duration.start();
 }

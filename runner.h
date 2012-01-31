@@ -12,7 +12,7 @@ class Runner : public QObject
     Q_OBJECT
 
 public:
-    explicit Runner(QObject *parent = 0, qint32 begin = 0, qint32 end = 0);
+    explicit Runner(QObject *parent = 0, qint32 begin = 0, qint32 end = 0, QString path = "data.db");
 
 signals:
     void finished();
