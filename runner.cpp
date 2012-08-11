@@ -3,7 +3,7 @@
 #include "runner.h"
 
 // TODO: class for reading site formats using *.price files
-QString baseurl = "http://pcdiga.com/pcdiga/Produto.asp?Artigo=";
+QString baseurl = "http://www.pcdiga.com/2/%%/product";
 QTextStream out(stdout); // console output stream
 
 Runner::Runner(QObject *parent, qint32 begin, qint32 end, QString path) :
@@ -60,7 +60,11 @@ void Runner::getNext()
         emit finished();
     }
 
-    retriever = new Retriever(QString(baseurl+QString::number(iid)));
+    QString currenturl = QString(baseurl);
+    currenturl.replace("%%", QString::number(iid));
+    retriever = new Retriever(currenturl);
+
+    //retriever = new Retriever(QString(baseurl+QString::number(iid)));
     connect(retriever, SIGNAL(contentReady()), this, SLOT(processContent()));
 }
 
