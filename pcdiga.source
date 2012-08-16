@@ -1,0 +1,5 @@
+http://pcdiga.com/pcdiga/Produto.asp?Artigo=%%
+1024
+<a href=\"Produto.asp\?Artigo\=[0-9]+\" class=\"LetraLaranja\">([\w\-\.\,/\&\; _\(\)\+\'\"\º\±\!\:\\]+)</a>
+<strong>[ \t\r\n]*&euro; ([0-9,]+)[ \t\r\n]*</strong>
+0
