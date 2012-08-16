@@ -6,13 +6,16 @@
 
 class Interpreter
 {
-private:
-    Interpreter();
-    static QRegExp title_exp;
-    static QRegExp price_exp;
-
 public:
-    static void parse_item(QString content, QString *title, float *price);
+    Interpreter(QString source);
+    void parse_item(QString content, QString *title, float *price);
+    QString getBaseURL();
+private:
+    QString base_url;
+    qint32 min_length;
+    QRegExp title_exp;
+    QRegExp price_exp;
+    qint32 reserved;
 };
 
 #endif // INTERPRETER_H

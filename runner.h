@@ -12,7 +12,7 @@ class Runner : public QObject
     Q_OBJECT
 
 public:
-    explicit Runner(QObject *parent = 0, qint32 begin = 0, qint32 end = 0, QString path = "data.db");
+    explicit Runner(QObject *parent = 0, qint32 begin = 0, qint32 end = 0, QString path = "data.db", QString source = "file.source");
 
 signals:
     void finished();
@@ -27,6 +27,7 @@ private slots:
     void getNext();
 
 private:
+    Interpreter *interpreter;
     Retriever *retriever;
     SqlSaver *sqlsaver;
     //Saver *saver;

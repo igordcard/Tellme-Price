@@ -1,18 +1,19 @@
-#include <QDebug>
+#include <QDebug> // TODO remove remaining QDebugs
 #include "retriever.h"
 #include "runner.h"
 
-// TODO: class for reading site formats using *.price files
-QString baseurl = "http://www.pcdiga.com/2/%%/product";
 QTextStream out(stdout); // console output stream
 
-Runner::Runner(QObject *parent, qint32 begin, qint32 end, QString path) :
+Runner::Runner(QObject *parent, qint32 begin, qint32 end, QString path, QString source) :
     QObject(parent)
-{ // TODO: check if all these news are really required...
+{
     iid = begin;
     max = end;
     cnt = 0;
+
+    interpreter = new Interpreter(source);
     sqlsaver = new SqlSaver(path);
+
     connect(this, SIGNAL(currentDone()), this, SLOT(getNext()));
     duration.start();
 }
@@ -38,8 +39,10 @@ void Runner::processContent()
     // free current retriever
     retriever->deleteLater();
 
-    Interpreter::parse_item(newContent, &title, &price);
-    if(price > 0) { // skip invalid or inexistent products
+    interpreter->parse_item(newContent, &title, &price);
+
+    // don't skip valid products
+    if(price > 0) {
         sqlsaver->addPrice(iid, title, price);
         cnt++;
     }
@@ -60,7 +63,7 @@ void Runner::getNext()
         emit finished();
     }
 
-    QString currenturl = QString(baseurl);
+    QString currenturl = QString(interpreter->getBaseURL());
     currenturl.replace("%%", QString::number(iid));
     retriever = new Retriever(currenturl);
 
