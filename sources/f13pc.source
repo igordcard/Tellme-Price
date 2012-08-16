@@ -1,0 +1,5 @@
+http://www.f13pc.com/loja/detalhes.php?id=%%
+10000
+<td width="320" height="15" class="texto_produto">([\w\-\.\,/\&\; _\(\)\+\'\"\º\±\!\:\\]+)</td>
+<div align="right"><span class="texto_preco">([0-9.]+)</span><span class="texto_preco2"> &euro;</span></div></td>
+0
