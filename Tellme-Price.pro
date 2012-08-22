@@ -1,5 +1,4 @@
 QT       += core network sql
-QT       -= gui
 
 TARGET = TellmePrice
 CONFIG   += console
@@ -13,13 +12,18 @@ SOURCES += main.cpp \
     saver.cpp \
     interpreter.cpp \
     runner.cpp \
-    sqlsaver.cpp
+    sqlsaver.cpp \
+    mainwindow.cpp
 
 HEADERS += \
     retriever.h \
     saver.h \
     interpreter.h \
     runner.h \
-    sqlsaver.h
+    sqlsaver.h \
+    mainwindow.h
 
 MOC_DIR = debug/moc
+
+FORMS += \
+    mainwindow.ui
